@@ -51,8 +51,13 @@ class BlogController extends Controller
     public function edit($id)
     {
         try {
-            $post = Post::findOrFail($id);
-            return view('post.edit', compact('post'));
+            $post = Post::where([['id',$id],['user_id',Auth::id()]])->first();
+            if($post){
+
+                return view('post.edit', compact('post'));
+            }else{
+                return redirect('dashboard')->with('error', 'Post not found.');
+            }
         } catch (ModelNotFoundException $e) {
             return redirect('dashboard')->with('error', 'Post not found.');
         } catch (Exception $e) {
